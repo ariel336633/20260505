@@ -1,14 +1,24 @@
-let capture;
+let video;
+let faceMesh;
+let faces = [];
+
+function preload() {
+  // 初始化 FaceMesh 模型，設定最大偵測 1 張臉並開啟影像翻轉
+  faceMesh = ml5.faceMesh({ maxFaces: 1, flipped: true });
+}
+
+function gotFaces(results) {
+  faces = results;
+}
 
 function setup() {
   // 建立一個與視窗大小相同的畫布
   createCanvas(windowWidth, windowHeight);
-  
-  // 建立攝影機擷取
-  capture = createCapture(VIDEO);
-  
-  // 隱藏預設產生的 HTML5 video 元件，只在畫布上繪製
-  capture.hide();
+  // 建立翻轉過的攝影機擷取
+  video = createCapture(VIDEO, { flipped: true });
+  video.hide();
+  // 開始偵測臉部
+  faceMesh.detectStart(video, gotFaces);
 }
 
 function draw() {
@@ -29,16 +39,32 @@ function draw() {
   let x = (width - imgWidth) / 2;
   let y = (height - imgHeight) / 2;
   
-  // 繪製攝影機影像到畫布中間，並加上左右翻轉（鏡像）效果
-  push();
-  // 移動座標系統到影像右邊邊界，然後縮放 -1 倍達成水平翻轉
-  translate(x + imgWidth, y);
-  scale(-1, 1);
-  image(capture, 0, 0, imgWidth, imgHeight);
-  pop();
+  // 繪製攝影機影像到畫布中間
+  image(video, x, y, imgWidth, imgHeight);
+
+  // 確保有偵測到臉部且影片已讀取寬度（避免除以 0）
+  if (faces.length > 0 && video.width > 0) {
+    let face = faces[0];
+    
+    // 計算座標轉換比例，讓偵測點跟隨縮小到 50% 且置中的影像
+    let sX = imgWidth / video.width;
+    let sY = imgHeight / video.height;
+
+    for (let i = 0; i < face.keypoints.length; i++) {
+      let keypoint = face.keypoints[i];
+      stroke(255, 255, 0); // 臉部網格點顏色（黃色）
+      strokeWeight(2);
+      // 將點位座標從原始影片大小映射到畫布上的位置：(起始 x) + (偵測點 * 縮放比例)
+      point(x + keypoint.x * sX, y + keypoint.y * sY);
+    }
+  }
 }
 
 // 確保當視窗大小改變時，畫布也會自動調整
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
+}
+
+function mousePressed() {
+  console.log(faces);
 }
