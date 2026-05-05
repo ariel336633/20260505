@@ -76,18 +76,16 @@ function draw() {
     let sY = imgHeight / video.height;
 
     noFill(); 
-    stroke(255, 0, 0); // 全部線條設為紅色
+    stroke(0, 0, 255); // 全部線條設為藍色
 
     // 繪製嘴巴的兩組線條 (粗細改為 2)
     drawConnectors(face, mouthGroup1, 2, x, y, sX, sY);
     drawConnectors(face, mouthGroup2, 2, x, y, sX, sY);
 
-    // 繪製臉部輪廓、眼睛與眉毛 (粗細改為 2)
+    // 繪製臉部輪廓與眼睛 (粗細改為 2)
     drawConnectors(face, faceOutlineIndices, 2, x, y, sX, sY);
     drawConnectors(face, leftEyeIndices, 2, x, y, sX, sY);
     drawConnectors(face, rightEyeIndices, 2, x, y, sX, sY);
-    drawConnectors(face, leftBrowIndices, 2, x, y, sX, sY);
-    drawConnectors(face, rightBrowIndices, 2, x, y, sX, sY);
   }
 }
 
