@@ -6,6 +6,11 @@ let isModelLoaded = false; // 用來追蹤模型是否載入完成
 // 將固定陣列移出 draw 函式，避免重複建立以提升效能
 const upperLipIndices = [409, 270, 269, 267, 0, 37, 39, 40, 185, 61, 146, 91, 181, 84, 17, 314, 405, 321, 375, 291];
 const lowerLipIndices = [76, 77, 90, 180, 85, 16, 315, 404, 320, 307, 306, 408, 304, 303, 302, 11, 72, 73, 74, 184];
+const faceOutlineIndices = [10, 338, 297, 332, 284, 251, 389, 356, 454, 323, 361, 288, 397, 365, 379, 378, 400, 377, 152, 148, 176, 149, 150, 136, 172, 58, 132, 93, 234, 127, 162, 21, 54, 103, 67, 109, 10];
+const leftEyeIndices = [33, 7, 163, 144, 145, 153, 154, 155, 133, 173, 157, 158, 159, 160, 161, 246, 33];
+const rightEyeIndices = [362, 382, 381, 380, 374, 373, 390, 249, 263, 466, 388, 387, 386, 385, 384, 398, 362];
+const leftBrowIndices = [70, 63, 105, 66, 107, 55, 65, 52, 53, 46];
+const rightBrowIndices = [336, 296, 334, 293, 300, 285, 295, 282, 283, 276];
 
 function gotFaces(results) {
   faces = results;
@@ -67,37 +72,38 @@ function draw() {
     let sX = imgWidth / video.width;
     let sY = imgHeight / video.height;
 
-    // 繪製第一組紅色厚線條 (粗細 15)
-    stroke(255, 0, 0);
-    strokeWeight(15);
-    noFill();
-    beginShape();
-    for (let index of upperLipIndices) {
-      let kp = face.keypoints[index];
-      if (kp) vertex(x + kp.x * sX, y + kp.y * sY);
-    }
-    endShape();
+    noFill(); // 確保不填色
+    stroke(255, 0, 0); // 設定線條為紅色
 
-    // 繪製第二組紅色細線條 (粗細 1)
-    stroke(255, 0, 0);
-    strokeWeight(1);
-    noFill();
-    beginShape();
-    for (let index of lowerLipIndices) {
-      let kp = face.keypoints[index];
-      if (kp) vertex(x + kp.x * sX, y + kp.y * sY);
-    }
-    endShape();
+    // 1. 繪製第一組厚線條 (唇部, 粗細 15)
+    drawConnectors(face, upperLipIndices, 15, x, y, sX, sY);
 
-    // 保留原本的所有偵測點 (黃色小點)
-    // if (faces.length > 0 && video.width > 0) {
-    //   for (let i = 0; i < face.keypoints.length; i++) {
-    //     let keypoint = face.keypoints[i];
-    //     stroke(255, 255, 0); 
-    //     strokeWeight(2);
-    //     point(x + keypoint.x * sX, y + keypoint.y * sY);
-    //   }
-    // }
+    // 2. 繪製第二組細線條 (唇部, 粗細 1)
+    drawConnectors(face, lowerLipIndices, 1, x, y, sX, sY);
+
+    // 3. 繪製臉部其他部位的線條 (輪廓、眼睛、眉毛, 粗細 1)
+    drawConnectors(face, faceOutlineIndices, 1, x, y, sX, sY);
+    drawConnectors(face, leftEyeIndices, 1, x, y, sX, sY);
+    drawConnectors(face, rightEyeIndices, 1, x, y, sX, sY);
+    drawConnectors(face, leftBrowIndices, 1, x, y, sX, sY);
+    drawConnectors(face, rightBrowIndices, 1, x, y, sX, sY);
+  }
+}
+
+// 輔助函式：利用 line 指令串接索引點位
+function drawConnectors(face, indices, weight, offsetX, offsetY, scaleX, scaleY) {
+  strokeWeight(weight);
+  for (let i = 0; i < indices.length - 1; i++) {
+    const p1 = face.keypoints[indices[i]];
+    const p2 = face.keypoints[indices[i + 1]];
+    if (p1 && p2) {
+      line(
+        offsetX + p1.x * scaleX,
+        offsetY + p1.y * scaleY,
+        offsetX + p2.x * scaleX,
+        offsetY + p2.y * scaleY
+      );
+    }
   }
 }
 
