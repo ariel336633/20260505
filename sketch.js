@@ -14,8 +14,9 @@ function gotFaces(results) {
 function setup() {
   // 建立一個與視窗大小相同的畫布
   createCanvas(windowWidth, windowHeight);
-  // 建立翻轉過的攝影機擷取
-  video = createCapture(VIDEO, { flipped: true });
+  // 建立攝影機擷取
+  // 這裡改用較標準的寫法，鏡像功能由 ml5 處理
+  video = createCapture(VIDEO);
   video.hide();
   // 開始偵測臉部
   faceMesh.detectStart(video, gotFaces);
@@ -42,19 +43,19 @@ function draw() {
   // 繪製攝影機影像到畫布中間
   image(video, x, y, imgWidth, imgHeight);
 
-  // 確保有偵測到臉部且影片已讀取寬度（避免除以 0）
+  // 5. 繪製臉部偵測點
+  // 加上 video.width > 0 判斷是為了確保攝影機啟動後才進行座標計算
   if (faces.length > 0 && video.width > 0) {
     let face = faces[0];
-    
-    // 計算座標轉換比例，讓偵測點跟隨縮小到 50% 且置中的影像
+    // 計算縮放比例，確保黃色點位能對齊畫面上 50% 寬高的影像
     let sX = imgWidth / video.width;
     let sY = imgHeight / video.height;
 
     for (let i = 0; i < face.keypoints.length; i++) {
       let keypoint = face.keypoints[i];
-      stroke(255, 255, 0); // 臉部網格點顏色（黃色）
+      stroke(255, 255, 0); // 黃色
       strokeWeight(2);
-      // 將點位座標從原始影片大小映射到畫布上的位置：(起始 x) + (偵測點 * 縮放比例)
+      // 座標轉換：(影像起始座標) + (偵測點 * 縮放比例)
       point(x + keypoint.x * sX, y + keypoint.y * sY);
     }
   }
