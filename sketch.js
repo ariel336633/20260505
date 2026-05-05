@@ -4,11 +4,14 @@ let faces = [];
 let isModelLoaded = false; // 用來追蹤模型是否載入完成
 
 // 將固定陣列移出 draw 函式，避免重複建立以提升效能
-const upperLipIndices = [409, 270, 269, 267, 0, 37, 39, 40, 185, 61, 146, 91, 181, 84, 17, 314, 405, 321, 375, 291];
-const lowerLipIndices = [76, 77, 90, 180, 85, 16, 315, 404, 320, 307, 306, 408, 304, 303, 302, 11, 72, 73, 74, 184];
+// 嘴巴部分使用你提供的編號
+const mouthGroup1 = [409, 270, 269, 267, 0, 37, 39, 40, 185, 61, 146, 91, 181, 84, 17, 314, 405, 321, 375, 291];
+const mouthGroup2 = [76, 77, 90, 180, 85, 16, 315, 404, 320, 307, 306, 408, 304, 303, 302, 11, 72, 73, 74, 184];
+
+// 臉部輪廓、眼睛與眉毛的編號
 const faceOutlineIndices = [10, 338, 297, 332, 284, 251, 389, 356, 454, 323, 361, 288, 397, 365, 379, 378, 400, 377, 152, 148, 176, 149, 150, 136, 172, 58, 132, 93, 234, 127, 162, 21, 54, 103, 67, 109, 10];
-const leftEyeIndices = [33, 7, 163, 144, 145, 153, 154, 155, 133, 173, 157, 158, 159, 160, 161, 246, 33];
-const rightEyeIndices = [362, 382, 381, 380, 374, 373, 390, 249, 263, 466, 388, 387, 386, 385, 384, 398, 362];
+const leftEyeIndices = [33, 7, 163, 144, 145, 153, 154, 155, 133, 173, 157, 158, 159, 160, 161, 246, 33]; // 加上 33 閉合
+const rightEyeIndices = [362, 382, 381, 380, 374, 373, 390, 249, 263, 466, 388, 387, 386, 385, 384, 398, 362]; // 加上 362 閉合
 const leftBrowIndices = [70, 63, 105, 66, 107, 55, 65, 52, 53, 46];
 const rightBrowIndices = [336, 296, 334, 293, 300, 285, 295, 282, 283, 276];
 
@@ -72,16 +75,14 @@ function draw() {
     let sX = imgWidth / video.width;
     let sY = imgHeight / video.height;
 
-    noFill(); // 確保不填色
-    stroke(255, 0, 0); // 設定線條為紅色
+    noFill(); 
+    stroke(255, 0, 0); // 全部線條設為紅色
 
-    // 1. 繪製第一組線條 (唇部, 粗細 2)
-    drawConnectors(face, upperLipIndices, 2, x, y, sX, sY);
+    // 繪製嘴巴的兩組線條 (粗細改為 2)
+    drawConnectors(face, mouthGroup1, 2, x, y, sX, sY);
+    drawConnectors(face, mouthGroup2, 2, x, y, sX, sY);
 
-    // 2. 繪製第二組線條 (唇部, 粗細 2)
-    drawConnectors(face, lowerLipIndices, 2, x, y, sX, sY);
-
-    // 3. 繪製臉部其他部位的線條 (輪廓、眼睛、眉毛, 粗細 2)
+    // 繪製臉部輪廓、眼睛與眉毛 (粗細改為 2)
     drawConnectors(face, faceOutlineIndices, 2, x, y, sX, sY);
     drawConnectors(face, leftEyeIndices, 2, x, y, sX, sY);
     drawConnectors(face, rightEyeIndices, 2, x, y, sX, sY);
