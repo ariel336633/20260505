@@ -15,6 +15,12 @@ function draw() {
   // 設定背景顏色為淺藍色
   background(173, 216, 230); // 也可以直接用 'lightblue'
   
+  // 在畫布上方顯示文字，左右置中
+  fill(0); // 設定文字顏色為黑色
+  textSize(32); // 設定字體大小
+  textAlign(CENTER, TOP); // 設定水平置中，並對齊文字頂部
+  text("教科414730639", width / 2, 40); // 顯示文字，垂直偏移 40 像素以防貼邊
+  
   // 計算影像顯示的寬高（畫布的 50%）
   let imgWidth = width * 0.5;
   let imgHeight = height * 0.5;
