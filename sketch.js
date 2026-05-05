@@ -75,18 +75,18 @@ function draw() {
     noFill(); // 確保不填色
     stroke(255, 0, 0); // 設定線條為紅色
 
-    // 1. 繪製第一組厚線條 (唇部, 粗細 15)
-    drawConnectors(face, upperLipIndices, 15, x, y, sX, sY);
+    // 1. 繪製第一組線條 (唇部, 粗細 2)
+    drawConnectors(face, upperLipIndices, 2, x, y, sX, sY);
 
-    // 2. 繪製第二組細線條 (唇部, 粗細 1)
-    drawConnectors(face, lowerLipIndices, 1, x, y, sX, sY);
+    // 2. 繪製第二組線條 (唇部, 粗細 2)
+    drawConnectors(face, lowerLipIndices, 2, x, y, sX, sY);
 
-    // 3. 繪製臉部其他部位的線條 (輪廓、眼睛、眉毛, 粗細 1)
-    drawConnectors(face, faceOutlineIndices, 1, x, y, sX, sY);
-    drawConnectors(face, leftEyeIndices, 1, x, y, sX, sY);
-    drawConnectors(face, rightEyeIndices, 1, x, y, sX, sY);
-    drawConnectors(face, leftBrowIndices, 1, x, y, sX, sY);
-    drawConnectors(face, rightBrowIndices, 1, x, y, sX, sY);
+    // 3. 繪製臉部其他部位的線條 (輪廓、眼睛、眉毛, 粗細 2)
+    drawConnectors(face, faceOutlineIndices, 2, x, y, sX, sY);
+    drawConnectors(face, leftEyeIndices, 2, x, y, sX, sY);
+    drawConnectors(face, rightEyeIndices, 2, x, y, sX, sY);
+    drawConnectors(face, leftBrowIndices, 2, x, y, sX, sY);
+    drawConnectors(face, rightBrowIndices, 2, x, y, sX, sY);
   }
 }
 
